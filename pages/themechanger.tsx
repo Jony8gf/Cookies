@@ -6,11 +6,23 @@ import Cookies from 'js-cookie'
 import { LineAxisOutlined } from '@mui/icons-material';
 import axios from 'axios';
 
-const ThemeChangerPage:FC = (props) => {
+// interface Props{
+//   theme: string;
+// }
 
-  console.log(props)
+interface Props {
+  children?: React.ReactNode | undefined,
+  themeCookie: string;
+}
 
-  const [currentTheme, setCurrentTheme] = useState('light');
+// export const EntriesProvider:FC<Props> = ({children}) => {
+
+const ThemeChangerPage:FC<Props> = (props) => {
+
+  // console.log(props)
+  // console.log(props.themeCookie)
+
+  const [currentTheme, setCurrentTheme] = useState(props.themeCookie);
 
   const onThemeChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCurrentTheme(event.target.value);
@@ -62,10 +74,13 @@ export const getServerSideProps: GetServerSideProps = async ({req}) => {
 
   const {themeCookie  = 'light', name = 'No name'} = req.cookies
 
+  const validTheme = ['light', 'dark', 'custom'];
+
+  // console.log('SSP:' + themeCookie)
 
   return {
     props: {
-      themeCookie,
+      themeCookie: validTheme.includes(themeCookie) ? themeCookie : 'light',
       name
     }
   }
